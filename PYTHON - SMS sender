@@ -1,0 +1,52 @@
+import tkinter as tk
+from twilio.rest import Client
+
+# Twilio credentials
+TWILIO_ACCOUNT_SID = 'your_account_sid'
+TWILIO_AUTH_TOKEN = 'your_auth_token'
+TWILIO_PHONE_NUMBER = 'your_twilio_phone_number'
+
+class SMSSenderApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("SMS Sender App")
+
+        self.label_number = tk.Label(root, text="Recipient Number:")
+        self.label_number.pack()
+
+        self.entry_number = tk.Entry(root)
+        self.entry_number.pack()
+
+        self.label_message = tk.Label(root, text="Message:")
+        self.label_message.pack()
+
+        self.text_message = tk.Text(root, height=5, width=40)
+        self.text_message.pack()
+
+        self.send_button = tk.Button(root, text="Send SMS", command=self.send_sms)
+        self.send_button.pack()
+
+    def send_sms(self):
+        to_number = self.entry_number.get()
+        message = self.text_message.get("1.0", tk.END)
+
+        if to_number and message:
+            client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+            try:
+                client.messages.create(
+                    to=to_number,
+                    from_=TWILIO_PHONE_NUMBER,
+                    body=message
+                )
+                print("SMS sent successfully!")
+            except Exception as e:
+                print("Error:", str(e))
+        else:
+            print("Recipient number and message are required.")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = SMSSenderApp(root)
+    root.mainloop()
+
+ # CREATED WITH THE HELP OF OPEN-AI CHAT GPT: https://chat.openai.com/chat
